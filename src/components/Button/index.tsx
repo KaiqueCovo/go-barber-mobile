@@ -7,7 +7,7 @@ interface ButtonProps extends RectButtonProperties {
   children: string
 }
 
-const Input: React.FC = ({ children, ...restProps }) => (
+const Input: React.FC<ButtonProps> = ({ children, ...restProps }) => (
   <Styled.Container {...restProps}>
     <Styled.ButtonText>{children}</Styled.ButtonText>
   </Styled.Container>
