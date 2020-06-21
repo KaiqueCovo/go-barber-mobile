@@ -16,7 +16,7 @@ import * as Yup from 'yup'
 
 import getValidationErros from '../../utils/getValidationErrors'
 
-import { useAuth } from '../../hooks/Auth'
+import { useAuth } from '../../hooks/auth'
 
 import logo from '../../assets/logo/logo.png'
 
