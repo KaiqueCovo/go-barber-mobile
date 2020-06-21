@@ -16,6 +16,8 @@ import * as Yup from 'yup'
 
 import getValidationErros from '../../utils/getValidationErrors'
 
+import { useAuth } from '../../hooks/Auth'
+
 import logo from '../../assets/logo/logo.png'
 
 import Input from '../../components/Input'
@@ -33,6 +35,8 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
   const passwordInputRef = useRef<TextInput>(null)
 
+  const auth = useAuth()
+
   const navigation = useNavigation()
 
   const handleSignIn = useCallback(async (data: SignInFormData) => {
@@ -49,10 +53,11 @@ const SignIn: React.FC = () => {
       await schemaValidation.validate(data, {
         abortEarly: false,
       })
+
+      await auth.signIn(data)
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = getValidationErros(error)
-        console.log(errors)
         formRef.current?.setErrors(errors)
       }
 

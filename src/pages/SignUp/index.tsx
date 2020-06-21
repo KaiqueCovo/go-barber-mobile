@@ -64,6 +64,7 @@ const SignUp: React.FC = () => {
           description: 'Você já pode fazer login na aplicação',
           type: 'success',
           icon: 'success',
+          floating: true,
           duration: 3000,
         })
 
@@ -79,6 +80,7 @@ const SignUp: React.FC = () => {
           description: 'Verifique se os campos foram preenchidos',
           type: 'danger',
           icon: 'danger',
+          floating: true,
           duration: 3000,
         })
       }
