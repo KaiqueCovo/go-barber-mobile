@@ -26,7 +26,7 @@ interface InputRef {
 }
 
 const Input: React.RefForwardingComponent<InputRef, InputProps> = (
-  { name, icon, ...restProps },
+  { name, placeholder, icon, ...restProps },
   ref
 ) => {
   const inputElementRef = useRef<any>(null)
@@ -69,8 +69,9 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
     })
   }, [registerField, fieldName])
 
+  console.log('signup', error)
   return (
-    <Styled.Container isFocused={isFocused}>
+    <Styled.Container isFocused={isFocused} isErrored={!!error}>
       <Icon
         name={icon}
         size={20}
@@ -84,6 +85,7 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         onChangeText={value => (inputValueRef.current.value = value)}
+        placeholder={error || placeholder}
         {...restProps}
       />
     </Styled.Container>

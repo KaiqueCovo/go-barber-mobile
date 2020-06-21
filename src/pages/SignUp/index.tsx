@@ -6,11 +6,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
 import Icon from 'react-native-vector-icons/Feather'
+import * as Yup from 'yup'
+
+import getValidationErros from '../../utils/getValidationErrors'
 
 import logo from '../../assets/logo/logo.png'
 
@@ -20,6 +24,12 @@ import Button from '../../components/Button'
 /* Styled Components */
 import * as Styled from './styles'
 
+interface SignUpFormData {
+  name: string
+  email: string
+  password: string
+}
+
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
   const emailInputRef = useRef<TextInput>(null)
@@ -27,8 +37,32 @@ const SignUp: React.FC = () => {
 
   const navigation = useNavigation()
 
-  const handleSignUp = useCallback(data => {
-    console.log(data)
+  const handleSignUp = useCallback(async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors({})
+
+      const schemaValidation = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().min(6, 'Senha no mínimo 6 dígitos'),
+      })
+
+      await schemaValidation.validate(data, {
+        abortEarly: false,
+      })
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErros(error)
+        formRef.current?.setErrors(errors)
+      }
+
+      Alert.alert(
+        'Erro no cadastro',
+        'Ocorreu um erro ao fazer cadastro, cheque os campos.'
+      )
+    }
   }, [])
 
   return (
