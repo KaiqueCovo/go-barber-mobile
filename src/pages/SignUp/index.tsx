@@ -16,6 +16,8 @@ import * as Yup from 'yup'
 
 import getValidationErros from '../../utils/getValidationErrors'
 
+import UserService from '../../services/user'
+
 import logo from '../../assets/logo/logo.png'
 
 import Input from '../../components/Input'
@@ -52,6 +54,15 @@ const SignUp: React.FC = () => {
       await schemaValidation.validate(data, {
         abortEarly: false,
       })
+
+      await UserService.create(data)
+
+      Alert.alert(
+        'Cadastro realizado com sucesso!',
+        'Você já pode fazer login.'
+      )
+
+      navigation.goBack()
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = getValidationErros(error)

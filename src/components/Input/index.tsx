@@ -69,7 +69,6 @@ const Input: React.RefForwardingComponent<InputRef, InputProps> = (
     })
   }, [registerField, fieldName])
 
-  console.log('signup', error)
   return (
     <Styled.Container isFocused={isFocused} isErrored={!!error}>
       <Icon
