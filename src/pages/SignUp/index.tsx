@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
 import Icon from 'react-native-vector-icons/Feather'
+import { showMessage, hideMessage } from 'react-native-flash-message'
 import * as Yup from 'yup'
 
 import getValidationErros from '../../utils/getValidationErrors'
@@ -39,42 +40,51 @@ const SignUp: React.FC = () => {
 
   const navigation = useNavigation()
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({})
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({})
 
-      const schemaValidation = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().min(6, 'Senha no mínimo 6 dígitos'),
-      })
+        const schemaValidation = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().min(6, 'Senha no mínimo 6 dígitos'),
+        })
 
-      await schemaValidation.validate(data, {
-        abortEarly: false,
-      })
+        await schemaValidation.validate(data, {
+          abortEarly: false,
+        })
 
-      await UserService.create(data)
+        await UserService.create(data)
 
-      Alert.alert(
-        'Cadastro realizado com sucesso!',
-        'Você já pode fazer login.'
-      )
+        showMessage({
+          message: 'Cadastro realizado!',
+          description: 'Você já pode fazer login na aplicação',
+          type: 'success',
+          icon: 'success',
+          duration: 3000,
+        })
 
-      navigation.goBack()
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErros(error)
-        formRef.current?.setErrors(errors)
+        navigation.goBack()
+      } catch (error) {
+        if (error instanceof Yup.ValidationError) {
+          const errors = getValidationErros(error)
+          formRef.current?.setErrors(errors)
+        }
+
+        showMessage({
+          message: 'Erro no cadastro!',
+          description: 'Verifique se os campos foram preenchidos',
+          type: 'danger',
+          icon: 'danger',
+          duration: 3000,
+        })
       }
-
-      Alert.alert(
-        'Erro no cadastro',
-        'Ocorreu um erro ao fazer cadastro, cheque os campos.'
-      )
-    }
-  }, [])
+    },
+    [navigation]
+  )
 
   return (
     <>
